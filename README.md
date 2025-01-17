@@ -234,8 +234,16 @@ Note: All protected routes require a Bearer Token in the Authorization header.
     }
 
 5. Delete Post:
+    Endpoint: DELETE /posts/{id}
+    Response:
+    {
+        "status": true,
+        "message": "Post deleted successfully"
+    }    
 
+6. Get Logs:
     Endpoint: GET /logs
+    
     Response:
     {
         "status": true,
@@ -267,15 +275,6 @@ Note: All protected routes require a Bearer Token in the Authorization header.
                 }
             }
         ]
-    }
-
-5. Get Logs:
-
-    Endpoint: DELETE /posts/{id}
-    Response:
-    {
-        "status": true,
-        "message": "Post deleted successfully"
     }
 
 ## Authentication
