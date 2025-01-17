@@ -7,60 +7,310 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+## About Laravel API Documentation
+This is a RESTful API built with Laravel that provides functionality for user authentication, profile management, post management, and token management.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Table of Contents
+- Features
+- Installation
+- API Endpoints
+    - Open Routes
+    - Protected Routes
+- Authentication
+- Example Responses
+- Contributing
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Features
+- User registration, verification, and login.
+- Token-based authentication using JWT.
+- Profile management.
+- Post CRUD (Create, Read, Update, Delete) operations.
+- Secure token refresh and logout functionality.
+-logging of user activity
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Installation
+- Clone the repository:
+    git clone https://github.com/festorium/laravel-crud.git
+    cd laravel-api
 
-## Learning Laravel
+- Install dependencies:
+    composer install
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- Set up environment variables: Create a .env file in the root directory:
+    cp .env.example .env
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+    Update the following variables:
+        DB_CONNECTION=mysql
+        DB_HOST=127.0.0.1
+        DB_PORT=3306
+        DB_DATABASE=your_database_name
+        DB_USERNAME=your_database_user
+        DB_PASSWORD=your_database_password
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+    Generate the application key:
+        php artisan key:generate
+    
+    Run migrations:
+        php artisan migrate
 
-## Laravel Sponsors
+    Start the server:
+        php artisan serve
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## API Endpoints
+Open Routes
+1. Register
+    Endpoint: POST /register
+    Description: Registers a new user.
+    Request Body (JSON):
+    {
+        "name": "Festus Ojesanmi",
+        "email": "john@example.com",
+        "password": "password123",
+        "password_confirmation": "password123"
+    }
 
-### Premium Partners
+    Response:
+    {
+        "status": true,
+        "message": "User registered successfully!",
+        "data": {
+            "id": 1,
+            "name": "Festus Ojesanmi",
+            "email": "john@example.com"
+        }
+    }
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+2. Verify Email
+    Endpoint: POST /verify-user
+    Description: Verifies a user's email.
+    Request Body (JSON):
+    {
+        "email": "john@example.com",
+        "verification_code": "123456"
+    }
+
+    Response:
+    {
+        "status": true,
+        "message": "Email verified successfully!"
+    }
+
+3. Login
+    Endpoint: POST /login
+    Description: Authenticates a user and returns a token.
+    Request Body (JSON):
+    {
+        "username": "john@example.com",
+        "password": "password123"
+    }
+
+    Response:
+    {
+        "status": true,
+        "message": "User logged in successfully",
+        "data": {
+            "token": "eyJhbGciOiJIUzI1NiIsInR...",
+            "expires_in": 3600
+        }
+    }
+
+## Protected Routes
+Note: All protected routes require a Bearer Token in the Authorization header.
+
+4. Get Profile
+    Endpoint: GET /profile
+    Description: Retrieves the authenticated user's profile.
+
+    Response:
+    {
+        "status": true,
+        "message": "Profile data retrieved successfully",
+        "data": {
+            "user": {
+                "id": 1,
+                "name": "Festus Ojesanmi",
+                "email": "john@example.com"
+            },
+            "email": "john@example.com"
+        }
+    }
+
+5. Refresh Token
+    Endpoint: GET /refresh-token
+    Description: Refreshes the authentication token.
+    
+    Response:
+    {
+        "status": true,
+        "message": "Token refreshed successfully",
+        "data": {
+            "token": "eyJhbGciOiJIUzI1NiIsInR...",
+            "expires_in": 3600
+        }
+    }
+
+6. Logout
+    Endpoint: GET /logout
+    Description: Logs out the authenticated user.
+
+    Response:
+    {
+        "status": true,
+        "message": "User logged out successfully"
+    }
+
+7. CRUD Operations for Posts
+1. Create a Post:
+
+    Endpoint: POST /posts
+    Request Body:
+    {
+        "title": "My First Post",
+        "content": "This is the content of the post."
+    }
+
+    Response:
+    {
+        "status": true,
+        "message": "Post created successfully",
+        "data": {
+            "id": 1,
+            "title": "My First Post",
+            "content": "This is the content of the post."
+        }
+    }
+
+2. Get All Posts:
+
+    Endpoint: GET /posts
+    Response:
+    {
+        "status": true,
+        "data": [
+            {
+                "id": 1,
+                "title": "First Post",
+                "content": "Content of the first post."
+            },
+            {
+                "id": 2,
+                "title": "Second Post",
+                "content": "Content of the second post."
+            }
+        ]
+    }
+
+3. Get Post by ID:
+
+    Endpoint: GET /posts/{id}
+    Response:
+    {
+        "status": true,
+        "data": {
+            "id": 1,
+            "title": "First Post",
+            "content": "Content of the first post."
+        }
+    }
+
+4. Update Post:
+
+    Endpoint: PUT /posts/{id}
+    Request Body:
+    {
+        "title": "Updated Title",
+        "content": "Updated content."
+    }
+
+    Response:
+    {
+        "status": true,
+        "message": "Post updated successfully",
+        "data": {
+            "id": 1,
+            "title": "Updated Title",
+            "content": "Updated content."
+        }
+    }
+
+5. Delete Post:
+
+    Endpoint: GET /logs
+    Response:
+    {
+        "status": true,
+        "data": [
+            {
+                "id": 5,
+                "user_id": 1,
+                "log_action": "DELETE_POST",
+                "log_description": "User deleted post with ID: 3",
+                "timestamp": "2025-01-17 15:47:07",
+                "updated_at": "2025-01-17T15:47:07.000000Z",
+                "created_at": "2025-01-17T15:47:07.000000Z",
+                "user": {
+                    "id": 1,
+                    "first_name": "Festus",
+                    "last_name": "Ojesanmi",
+                    "username": "festorium",
+                    "phone": "1234567890",
+                    "user_id": "USER-678a6528c862c",
+                    "address": "123 Main St",
+                    "state": "CA",
+                    "country": "USA",
+                    "email": "festorium10@gmail.com",
+                    "email_verification_code": "369349",
+                    "is_verified": 0,
+                    "last_login": "2025-01-17 15:33:23",
+                    "created_at": "2025-01-17T14:11:53.000000Z",
+                    "updated_at": "2025-01-17T15:33:23.000000Z"
+                }
+            }
+        ]
+    }
+
+5. Get Logs:
+
+    Endpoint: DELETE /posts/{id}
+    Response:
+    {
+        "status": true,
+        "message": "Post deleted successfully"
+    }
+
+## Authentication
+All protected routes require a Bearer Token. Include the token in the Authorization header:
+    Authorization: Bearer {your_token}
+
+## Postman Documentation
+You can find the complete API documentation, including detailed descriptions, request examples, and responses, in the Postman collection:
+
+    Laravel API Postman Collection
+        https://www.postman.com/dark-escape-433123-1/workspace/dev/collection/19478526-0af5cfdf-e2df-4cf6-a5da-0e826dd8a298?action=share&creator=19478526.
 
 ## Contributing
+Contributions are welcome! To contribute:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- Fork the repository.
+- Create a feature branch: git checkout -b my-feature.
+- Commit your changes: git commit -m "Add a new feature".
+- Push to the branch: git push origin my-feature.
+- Create a pull request.
 
-## Code of Conduct
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-## Security Vulnerabilities
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
-## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
+
+
+
+
+
+
+
+
+
+
